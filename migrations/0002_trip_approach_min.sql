@@ -1,0 +1,13 @@
+-- Keep the approach leg on the trip that drove it.
+--
+-- learnZoneTime folds an observed duration into the pickup→dest cell, but the
+-- span it measures starts at assignment — before the driver had reached the
+-- passenger. That teaches the cell the approach as well as the carry, and
+-- travelMinutes reads the very same cell back when it estimates the *next*
+-- approach, so the error feeds itself: over one simulated day cells drifted
+-- ×1.22 to ×2.28. markDriverUnderway already computes the approach and threw it
+-- away; storing it is what lets the learner subtract it again.
+--
+-- NULL means the trip was never marked under way (or predates this column) and
+-- is read as zero, which is exactly the old behaviour for those rows.
+ALTER TABLE trips ADD COLUMN approach_min REAL;

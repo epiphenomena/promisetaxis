@@ -1,0 +1,41 @@
+{
+  "name": "promisetaxis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WhatsApp-based tuktuk hailing and dispatch for Copán Ruinas, Honduras",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --var DEV_MODE:true",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy --env production",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "demo:typecheck": "tsc --noEmit -p demo/tsconfig.json",
+    "demo:verify": "node demo/bundle.mjs harness demo/verify-phase1.ts demo/dist/verify-phase1.mjs && node demo/dist/verify-phase1.mjs",
+    "demo:verify:map": "node demo/bundle.mjs harness demo/verify-phase3.ts demo/dist/verify-phase3.mjs && node demo/dist/verify-phase3.mjs",
+    "demo:verify:slots": "node demo/bundle.mjs harness demo/verify-phase4.ts demo/dist/verify-phase4.mjs && node demo/dist/verify-phase4.mjs",
+    "demo:verify:hour": "node demo/bundle.mjs harness demo/verify-phase5.ts demo/dist/verify-phase5.mjs && node demo/dist/verify-phase5.mjs",
+    "demo:dev": "node demo/bundle.mjs serve",
+    "demo:build": "node demo/build.mjs",
+    "demo:verify:handout": "node demo/bundle.mjs harness demo/verify-phase6.ts demo/dist/verify-phase6.mjs && node demo/dist/verify-phase6.mjs",
+    "db:migrate": "wrangler d1 migrations apply tuktuk --local",
+    "db:migrate:staging": "wrangler d1 migrations apply tuktuk --env staging --remote",
+    "db:migrate:prod": "wrangler d1 migrations apply tuktuk --env production --remote",
+    "db:seed": "wrangler d1 execute tuktuk --local --file=./seeds/dev.sql",
+    "db:reset": "rm -rf .wrangler/state/v3/d1 && npm run db:migrate && npm run db:seed",
+    "db:console": "wrangler d1 execute tuktuk --local --command"
+  },
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.5.40",
+    "@cloudflare/workers-types": "^4.20241224.0",
+    "esbuild": "^0.24.2",
+    "sql.js": "^1.14.2",
+    "typescript": "^5.7.2",
+    "vitest": "2.1.8",
+    "wrangler": "^3.99.0"
+  }
+}

@@ -1,0 +1,2157 @@
+/**
+ * "Cal y polvo" — the demo's look.
+ *
+ * PALETTE. Copán Ruinas at nine in the morning: limestone dust on everything,
+ * lime-washed adobe, and signage painted by hand in whatever enamel the hardware
+ * store had. So the page ground is warm limestone (#f6f0e4) rather than a neutral
+ * grey, the ink is a brown-black rather than pure black, and the one accent is
+ * the clay red (#b8452a) of roof tiles and painted lettering. Two supports: jade
+ * (#2d7358) for the valley and for anything meaning "available", and ochre
+ * (#a8721c) for anything meaning "wait". Dark mode is the same town after dusk —
+ * the browns stay brown, so it reads as evening and not as a different product.
+ *
+ * The phones are the deliberate exception. Their chat ground, bubble greens and
+ * bar greys are WhatsApp's own values, unmodified, because a customer's trust in
+ * this service is partly trust in the app it arrives through, and a bubble in a
+ * tasteful clay tint would be a small lie about where the conversation happens.
+ * Everything outside the phone bezel belongs to the demo; everything inside it
+ * belongs to WhatsApp.
+ *
+ * TYPEFACES. Two, plus figures.
+ *   Georgia (with Liberation/DejaVu serif fallbacks) for the chrome — titles,
+ *   labels, the ticker. A printed, slightly heavy serif: municipal notices and
+ *   painted shop signs in town are serifs, and it puts the surrounding page in a
+ *   different register from the phones so the two never blur together. It is also
+ *   on every machine the nonprofit might present from, which matters because the
+ *   built demo must work with no network.
+ *
+ *   The humanist sans WhatsApp itself renders in (Segoe UI on Windows, Roboto on
+ *   Android, Helvetica Neue on macOS) for everything inside a phone. Not a
+ *   stylistic choice: it is what the copy will look like in the field.
+ *
+ *   A monospace stack with tabular figures for the clock and coordinates, so a
+ *   running clock does not shuffle sideways every minute.
+ *
+ * No webfonts anywhere. Phase 6 has to open from `file://` with no network, and
+ * a design that depends on a downloaded face would have to be rebuilt then.
+ */
+
+:root {
+  --paper: #f6f0e4;
+  --paper-2: #efe6d5;
+  --card: #fffdf8;
+  --line: #ddd0b9;
+  --line-soft: #e8dcc8;
+  --ink: #241c14;
+  --ink-2: #6b5a48;
+  --ink-3: #9a8977;
+  --clay: #b8452a;
+  --clay-ink: #ffffff;
+  --clay-soft: #f4dfd7;
+  --jade: #2d7358;
+  --jade-soft: #dcece3;
+  --ochre: #a8721c;
+  --ochre-soft: #f6e8cd;
+  --shadow: 0 1px 2px rgba(36, 28, 20, 0.08), 0 10px 30px rgba(36, 28, 20, 0.11);
+  --shadow-soft: 0 1px 2px rgba(36, 28, 20, 0.07);
+
+  /* The device itself: a cheap phone in a scuffed case. */
+  --device: #2a2420;
+  --device-edge: #4a4038;
+
+  /* WhatsApp's own values. Not derived from the palette above, on purpose. */
+  --wa-bar: #f0f2f5;
+  --wa-bar-ink: #111b21;
+  --wa-bar-ink-2: #667781;
+  --wa-ground: #efeae2;
+  --wa-in: #ffffff;
+  --wa-out: #d9fdd3;
+  --wa-ink: #111b21;
+  --wa-time: rgba(17, 27, 33, 0.45);
+  --wa-action: #027eb5;
+  --wa-rule: rgba(17, 27, 33, 0.1);
+  --wa-sheet: #ffffff;
+  --wa-sheet-2: #f5f6f6;
+  --wa-avatar: #d7dbdd;
+  --wa-avatar-ink: #55636c;
+  /* A control under a thumb: WhatsApp's own action blue, and a wash of it. */
+  --wa-press: #d6ecfb;
+  --wa-press-ink: #026c9b;
+
+  /* The town map. Ground a shade darker than the page, so the map reads as an
+     object laid on the table rather than a hole cut in it. */
+  --town-paper: #d5cdad;
+  --town-contour: rgba(104, 82, 52, 0.2);
+  --town-water: #a3c2c8;
+  --town-zone-1: #faf4e6;
+  --town-zone-2: #eee4cd;
+  --town-zone-3: #e3d7b9;
+  --town-zone-line: rgba(104, 82, 52, 0.5);
+  --town-road: #fdfaf2;
+  --town-road-edge: #cbbb9b;
+  --town-dot: #8a745a;
+  --town-label: #5e4e3d;
+  --town-halo: rgba(238, 231, 212, 0.85);
+  --town-frame: #cbbb9b;
+  --taxi-body: #fffdf8;
+  --taxi-shadow: rgba(36, 28, 20, 0.16);
+
+  /* The little map card. */
+  --map-ground: #e6dcc6;
+  --map-block: #d8ccb2;
+  --map-road: #fbf8f1;
+  --map-water: #b9cfd2;
+  --map-pin: #b8452a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17120e;
+    --paper-2: #201913;
+    --card: #241c15;
+    --line: #3a2e24;
+    --line-soft: #2e251d;
+    --ink: #f2e9da;
+    --ink-2: #bfae99;
+    --ink-3: #8d7d6c;
+    --clay: #e06a49;
+    --clay-ink: #241c14;
+    --clay-soft: #3a211a;
+    --jade: #5bb894;
+    --jade-soft: #1d332a;
+    --ochre: #d7a342;
+    --ochre-soft: #332616;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 34px rgba(0, 0, 0, 0.45);
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+    --device: #060403;
+    --device-edge: #574837;
+
+    --wa-bar: #202c33;
+    --wa-bar-ink: #e9edef;
+    --wa-bar-ink-2: #8696a0;
+    --wa-ground: #0b141a;
+    --wa-in: #1f2c33;
+    --wa-out: #005c4b;
+    --wa-ink: #e9edef;
+    --wa-time: rgba(233, 237, 239, 0.5);
+    --wa-action: #53bdeb;
+    --wa-rule: rgba(233, 237, 239, 0.12);
+    --wa-sheet: #233138;
+    --wa-sheet-2: #1c282e;
+    --wa-avatar: #46555f;
+    --wa-avatar-ink: #cfd9de;
+    --wa-press: #17394c;
+    --wa-press-ink: #7fd0f4;
+
+    --town-paper: #181309;
+    --town-contour: rgba(242, 233, 218, 0.09);
+    --town-water: #2e484f;
+    --town-zone-1: #3c3225;
+    --town-zone-2: #332b20;
+    --town-zone-3: #2b241a;
+    --town-zone-line: rgba(242, 233, 218, 0.26);
+    --town-road: #4c4235;
+    --town-road-edge: #2b241c;
+    --town-dot: #9a8977;
+    --town-label: #c7b69f;
+    --town-halo: rgba(20, 16, 12, 0.78);
+    --town-frame: #3a2e24;
+    --taxi-body: #2a2119;
+    --taxi-shadow: rgba(0, 0, 0, 0.5);
+
+    --map-ground: #2a2a23;
+    --map-block: #34342b;
+    --map-road: #4a4a3f;
+    --map-water: #2c4149;
+    --map-pin: #e06a49;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #17120e;
+  --paper-2: #201913;
+  --card: #241c15;
+  --line: #3a2e24;
+  --line-soft: #2e251d;
+  --ink: #f2e9da;
+  --ink-2: #bfae99;
+  --ink-3: #8d7d6c;
+  --clay: #e06a49;
+  --clay-ink: #241c14;
+  --clay-soft: #3a211a;
+  --jade: #5bb894;
+  --jade-soft: #1d332a;
+  --ochre: #d7a342;
+  --ochre-soft: #332616;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+  --device: #060403;
+  --device-edge: #574837;
+
+  --wa-bar: #202c33;
+  --wa-bar-ink: #e9edef;
+  --wa-bar-ink-2: #8696a0;
+  --wa-ground: #0b141a;
+  --wa-in: #1f2c33;
+  --wa-out: #005c4b;
+  --wa-ink: #e9edef;
+  --wa-time: rgba(233, 237, 239, 0.5);
+  --wa-action: #53bdeb;
+  --wa-rule: rgba(233, 237, 239, 0.12);
+  --wa-sheet: #233138;
+  --wa-sheet-2: #1c282e;
+  --wa-avatar: #46555f;
+  --wa-avatar-ink: #cfd9de;
+  --wa-press: #17394c;
+  --wa-press-ink: #7fd0f4;
+
+  --town-paper: #181309;
+  --town-contour: rgba(242, 233, 218, 0.09);
+  --town-water: #2e484f;
+  --town-zone-1: #3c3225;
+  --town-zone-2: #332b20;
+  --town-zone-3: #2b241a;
+  --town-zone-line: rgba(242, 233, 218, 0.26);
+  --town-road: #4c4235;
+  --town-road-edge: #2b241c;
+  --town-dot: #9a8977;
+  --town-label: #c7b69f;
+  --town-halo: rgba(20, 16, 12, 0.78);
+  --town-frame: #3a2e24;
+  --taxi-body: #2a2119;
+  --taxi-shadow: rgba(0, 0, 0, 0.5);
+
+  --map-ground: #2a2a23;
+  --map-block: #34342b;
+  --map-road: #4a4a3f;
+  --map-water: #2c4149;
+  --map-pin: #e06a49;
+}
+
+:root {
+  --chrome: Georgia, "Liberation Serif", "DejaVu Serif", "Times New Roman", serif;
+  --wa-font: "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --figures: ui-monospace, "SF Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  --radius: 10px;
+
+  /*
+   * The phone's screen, sized so that four of them and the map fit a window
+   * without scrolling — because the demo is watched, and a beat that happens
+   * below the fold happens to nobody.
+   *
+   * 256px is everything else down a phone column, measured through the DOM rather
+   * than off a screenshot: the top bar (67), the stage's padding (35), the column
+   * heading and its gap (26), and per slot the bezel (22), the gap under it (6)
+   * and the take-control bar (28). Two slots, so the viewport left over is halved,
+   * and the few pixels of slack are because the bar only appears once a slot has
+   * somebody in it — the page must not start scrolling the moment it does.
+   *
+   * Clamped at both ends because a thread under 320px shows a single bubble, and
+   * past 560px the thing stops reading as a phone and starts reading as a browser
+   * window. Below about 880px of viewport the floor wins and the stage has to
+   * scroll; the short-window rule at the end of this file is what handles that.
+   */
+  --phone-h: clamp(320px, calc((100vh - 256px) / 2), 560px);
+
+  /*
+   * How short the day's log is allowed to get.
+   *
+   * A minimum and not a height: the log sits under the map and takes whatever
+   * vertical space the middle column has left, which is however much taller the
+   * phone columns are than the map. That is where the phones' extra height came
+   * from, so the two numbers are the same trade seen from either end.
+   */
+  --ticker-h: 9.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--chrome);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The limestone dust, at the threshold of visibility. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(120, 96, 64, 0.14) 1px, transparent 0);
+  background-size: 5px 5px;
+  opacity: 0.55;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The mirrored phones' buttons are `disabled` rather than merely unclickable, so
+   the cursor has to stop promising something too. */
+button:disabled {
+  cursor: default;
+}
+
+/*
+ * One focus ring for the whole page, in the accent, offset so it clears a rounded
+ * corner. It has to survive both grounds: the clay reads against limestone in the
+ * chrome and against WhatsApp's near-white and near-black inside a phone, which a
+ * ring in either ground's own ink would not.
+ */
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+
+/* Inside a phone the outline would be clipped by the thread's own scroll box on
+   the outermost row, so it is drawn inside the control instead. */
+.action:focus-visible,
+.sheet__row:focus-visible {
+  outline-offset: -3px;
+}
+
+
+.icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  fill: currentColor;
+}
+
+/* ── The bar across the top ───────────────────────────────────────────────── */
+
+.top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.5rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.top__title {
+  margin: 0;
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.top__title em {
+  font-style: normal;
+  color: var(--clay);
+}
+
+.top__sub {
+  color: var(--ink-3);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.top__spacer {
+  flex: 1;
+}
+
+.clock {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.2rem 0.7rem 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.clock__face {
+  font-family: var(--figures);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.clock__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  border-color: var(--clay);
+  color: var(--clay);
+}
+
+/*
+ * The primary control, and drawn as one.
+ *
+ * ▶ is the clock; this is the hour. A viewer arriving at a page with four empty
+ * phones has exactly one thing to press, and the filled ink button against the
+ * clay ▶ is what says which — two equally loud buttons side by side is how a
+ * demo gets opened and abandoned.
+ */
+.btn--hour {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.btn--hour:hover {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: var(--clay-ink);
+  filter: none;
+}
+
+.btn--play {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: var(--clay-ink);
+  font-weight: 700;
+  min-width: 7.5rem;
+  justify-content: center;
+}
+
+.btn--play:hover {
+  color: var(--clay-ink);
+  filter: brightness(1.08);
+}
+
+.btn--play::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 8px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.btn--play[aria-pressed="true"]::before {
+  width: 9px;
+  height: 10px;
+  border: none;
+  /* Two bars out of one box, so the glyph swap needs no second element. */
+  background: linear-gradient(
+    to right,
+    currentColor 0 34%,
+    transparent 34% 66%,
+    currentColor 66% 100%
+  );
+}
+
+/*
+ * The page with nothing left to run.
+ *
+ * `main.ts` stops the clock when the last beat has played and the last trip has
+ * closed, and disables ▶ and the speeds in the same breath — a speed control on a
+ * page that cannot advance is a control that lies. What is left has to *look* like
+ * an ending rather than like a page that broke: the two dead controls recede, the
+ * clock face goes quiet at the minute it stopped on, and the one thing still worth
+ * pressing is ringed so that a room full of people can see where to look next.
+ *
+ * A static ring and not a pulse. This is the state a presentation ends on and
+ * somebody may leave it on screen for minutes while they talk over it; an animation
+ * that never stops would be the loudest thing in the room by the end of it, and it
+ * would have to be undone again under `prefers-reduced-motion`.
+ */
+:root[data-hour="over"] .btn--play,
+:root[data-hour="over"] .speeds {
+  opacity: 0.45;
+}
+
+:root[data-hour="over"] .clock__face {
+  color: var(--ink-2);
+}
+
+:root[data-hour="over"] .btn--hour {
+  /* Clay rather than one of the soft tints: the ring has to read across a room in
+     both themes, and in each of them the soft clay sits within a shade or two of
+     the ground it would be drawn on. */
+  box-shadow: 0 0 0 3px var(--clay);
+}
+
+.speeds {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.speeds button {
+  padding: 0.38rem 0.75rem;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink-2);
+  font-family: var(--figures);
+  font-size: 0.82rem;
+}
+
+.speeds button:first-child {
+  border-left: none;
+}
+
+.speeds button:hover {
+  background: var(--paper-2);
+}
+
+.speeds button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.seed {
+  font-family: var(--figures);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+}
+
+/* ── The fault strip ──────────────────────────────────────────────────────── */
+
+.fault {
+  position: relative;
+  z-index: 2;
+  padding: 0.7rem 1.5rem;
+  background: var(--clay-soft);
+  border-bottom: 1px solid var(--clay);
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.fault[hidden] {
+  display: none;
+}
+
+.fault__detail {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--figures);
+  font-size: 0.76rem;
+  color: var(--ink-2);
+  word-break: break-word;
+}
+
+/* ── The stage ────────────────────────────────────────────────────────────── */
+
+/*
+ * Phones either side, map in the middle, on a grid rather than a flex row: the
+ * map is the one element that should take whatever width is left, and with
+ * `flex-wrap` a window a few pixels too narrow drops the *last* phone to its own
+ * row instead of the map.
+ *
+ * Padded evenly all round. It used to reserve the log's height at the foot as
+ * well, which double-counted it — the log is in the page's flow and was also
+ * being made room for — and the page scrolled by seventy pixels at 1080p for
+ * nothing. The log is in the middle column now and this is plain padding again.
+ */
+.stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(430px, 1fr) auto;
+  justify-content: center;
+  align-items: start;
+  column-gap: 2rem;
+  row-gap: 1.4rem;
+  /* Tighter above and below than at the sides: every pixel down the page is a
+     pixel of thread, and the sides have room to spare at any width that shows
+     three columns at all. */
+  padding: 1.1rem 1.5rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.column__label {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.column--map {
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+
+/* The map and the zone-time strip, held together so the log can be the thing
+   that stretches. */
+.mapstack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── The map ──────────────────────────────────────────────────────────────── */
+
+/*
+ * Capped at every width, not only under the breakpoint.
+ *
+ * The SVG is `width: 100%; height: auto`, so without a cap the map's *height* is
+ * a function of the window's width — on a 2560px screen the middle column would
+ * be 1700px across and the map 880px tall, which is taller than the phone columns
+ * and would push the whole composition into a scroll. The cap is what makes the
+ * page's height depend on the window's height alone.
+ */
+.map {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.map__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  background: var(--town-paper);
+  box-shadow: var(--shadow);
+}
+
+.map__paper {
+  fill: var(--town-paper);
+}
+
+.map__contour {
+  fill: none;
+  stroke: var(--town-contour);
+  stroke-width: 2;
+}
+
+.map__river {
+  fill: none;
+  stroke: var(--town-water);
+  stroke-width: 11;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.map__zone {
+  stroke: var(--town-zone-line);
+  stroke-width: 1.8;
+  stroke-dasharray: 8 5;
+}
+
+.map__zone[data-tint="1"] {
+  fill: var(--town-zone-1);
+}
+
+.map__zone[data-tint="2"] {
+  fill: var(--town-zone-2);
+}
+
+.map__zone[data-tint="3"] {
+  fill: var(--town-zone-3);
+}
+
+/* Casing under surface: two strokes are what make a line read as a road. */
+.map__road-edge,
+.map__road {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.map__road-edge {
+  stroke: var(--town-road-edge);
+}
+
+.map__road {
+  stroke: var(--town-road);
+}
+
+.map__road-edge[data-cls="highway"] {
+  stroke-width: 13;
+}
+
+.map__road[data-cls="highway"] {
+  stroke-width: 9;
+}
+
+.map__road-edge[data-cls="street"] {
+  stroke-width: 9;
+}
+
+.map__road[data-cls="street"] {
+  stroke-width: 5.5;
+}
+
+/* A track is unpaved: no surface pass to speak of, and dashed. */
+.map__road-edge[data-cls="track"] {
+  stroke-width: 6;
+  stroke-dasharray: 11 7;
+}
+
+.map__road[data-cls="track"] {
+  stroke-width: 2.5;
+  stroke-dasharray: 11 7;
+}
+
+.map__dot {
+  fill: var(--town-dot);
+  stroke: var(--town-halo);
+  stroke-width: 1.4;
+}
+
+/* Labels are stroked before they are filled, so a name stays readable wherever
+   it lands — over a road, a polygon edge, or the river. */
+.map__zone-label,
+.map__dot-label,
+.map__gate-label {
+  fill: var(--town-label);
+  stroke: var(--town-halo);
+  stroke-width: 3.5;
+  paint-order: stroke fill;
+  font-family: var(--chrome);
+}
+
+.map__zone-label {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.map__dot-label {
+  font-size: 16.5px;
+  font-style: italic;
+}
+
+.map__gate-label {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.map__gate-road {
+  fill: none;
+  stroke: var(--town-road-edge);
+  stroke-width: 5;
+  stroke-dasharray: 9 6;
+  stroke-linecap: round;
+}
+
+.map__gate-head {
+  fill: var(--town-road-edge);
+}
+
+.map__frame {
+  fill: none;
+  stroke: var(--town-frame);
+  stroke-width: 2;
+}
+
+/* ── The ghost trail ──────────────────────────────────────────────────────── */
+
+/*
+ * Why that driver got the job, drawn. The dashed leg is the approach — the
+ * distance the scoring rule actually compared — and the solid one is the fare.
+ */
+.map__trail {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.map__trail[data-leg="approach"] {
+  stroke: var(--ochre);
+  stroke-dasharray: 10 8;
+  opacity: 0.85;
+}
+
+.map__trail[data-leg="carry"] {
+  stroke: var(--clay);
+  opacity: 0.6;
+}
+
+.map__trail[data-leg="reposition"] {
+  stroke: var(--town-dot);
+  stroke-dasharray: 3 9;
+  opacity: 0.45;
+}
+
+/* ── Sprites ──────────────────────────────────────────────────────────────── */
+
+.taxi__shadow {
+  fill: var(--taxi-shadow);
+}
+
+.taxi__ring {
+  fill: var(--taxi-body);
+  stroke: var(--town-dot);
+  stroke-width: 3.5;
+}
+
+.taxi__mark {
+  font-size: 27px;
+}
+
+.taxi__plate {
+  fill: var(--taxi-body);
+  stroke: var(--town-dot);
+  stroke-width: 1.5;
+}
+
+.taxi__number {
+  fill: var(--ink);
+  font-family: var(--figures);
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.taxi[data-status="available"] .taxi__ring {
+  stroke: var(--jade);
+}
+
+.taxi[data-status="available"] .taxi__plate {
+  stroke: var(--jade);
+}
+
+/*
+ * Clay for a working taxi, matching the status pill on the driver's own phone —
+ * but broken while the seat is empty and solid once the fare is aboard.
+ *
+ * Keyed on the leg and not only on the status, because a hail leaves the driver
+ * `assigned` from the claim right through to ✅ Listo: `trips.state` never says
+ * "picked up", so the status alone cannot tell the two halves of a trip apart.
+ */
+.taxi[data-status="assigned"] .taxi__ring,
+.taxi[data-status="on_trip"] .taxi__ring {
+  stroke: var(--clay);
+}
+
+.taxi[data-leg="approach"] .taxi__ring {
+  stroke-dasharray: 7 5;
+}
+
+.taxi[data-status="assigned"] .taxi__plate,
+.taxi[data-status="on_trip"] .taxi__plate {
+  stroke: var(--clay);
+}
+
+.taxi[data-status="break"] .taxi__ring {
+  stroke: var(--ochre);
+  stroke-dasharray: 4 5;
+}
+
+.taxi[data-status="break"] .taxi__plate {
+  stroke: var(--ochre);
+}
+
+.taxi[data-status="break"] {
+  opacity: 0.75;
+}
+
+.taxi[data-status="off"] .taxi__ring {
+  stroke: var(--ink-3);
+  stroke-dasharray: 2 6;
+}
+
+.taxi[data-status="off"] {
+  opacity: 0.45;
+}
+
+.wait__spot {
+  fill: var(--clay);
+  stroke: var(--town-halo);
+  stroke-width: 1.4;
+}
+
+.wait__stem {
+  stroke: var(--clay);
+  stroke-width: 2;
+}
+
+.wait__ring {
+  fill: var(--taxi-body);
+  stroke: var(--clay);
+  stroke-width: 3;
+}
+
+.wait__mark {
+  font-size: 19px;
+}
+
+/* Nobody has been assigned yet — the ochre the palette reserves for waiting. */
+.wait[data-state="pending"] .wait__spot,
+.wait[data-state="pending"] .wait__stem {
+  fill: var(--ochre);
+  stroke: var(--ochre);
+}
+
+.wait[data-state="pending"] .wait__ring {
+  stroke: var(--ochre);
+  stroke-dasharray: 6 4;
+}
+
+/* ── The legend ───────────────────────────────────────────────────────────── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legend__swatch {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+}
+
+.legend__ring {
+  fill: var(--taxi-body);
+  stroke-width: 3.5;
+}
+
+.legend__item[data-status="available"] .legend__ring {
+  stroke: var(--jade);
+}
+
+.legend__item[data-status="assigned"] .legend__ring {
+  stroke: var(--clay);
+  stroke-dasharray: 5 3.5;
+}
+
+.legend__item[data-status="on_trip"] .legend__ring {
+  stroke: var(--clay);
+}
+
+.legend__item[data-status="break"] .legend__ring {
+  stroke: var(--ochre);
+  stroke-dasharray: 3 3.5;
+}
+
+.legend__item[data-status="off"] .legend__ring {
+  stroke: var(--ink-3);
+  stroke-dasharray: 1.5 4;
+}
+
+/* ── The zone-time strip ──────────────────────────────────────────────────── */
+
+/*
+ * One line under the map, and the only place on the page that shows the service
+ * getting better rather than working. It sits with the map and not with the log
+ * because the matrix is about the town: these are travel times between the same
+ * polygons drawn above it.
+ *
+ * Quiet until something changes — `[data-moved="false"]` is a sentence in the
+ * grey the rest of the furniture uses — and then it takes the jade the log gives
+ * a completed thing. A strip that looked urgent all day would have nothing left
+ * to do at the moment it matters.
+ */
+.learn {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.learn[data-moved="true"] {
+  border-left-color: var(--jade);
+  background: var(--jade-soft);
+}
+
+.learn__label {
+  margin: 0;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.learn__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.55rem;
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+
+.learn__cell {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* The old number struck through rather than merely faded: "7.0 ▸ 10.4" with both
+   in the same weight reads as a range, which is the opposite of what happened. */
+.learn__was {
+  font-family: var(--figures);
+  font-variant-numeric: tabular-nums;
+  text-decoration: line-through;
+  color: var(--ink-3);
+}
+
+.learn__arrow {
+  color: var(--jade);
+}
+
+.learn__now {
+  font-family: var(--figures);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--jade);
+}
+
+.learn__how {
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+.learn__count {
+  margin-left: auto;
+  font-family: var(--figures);
+  font-size: 0.76rem;
+  color: var(--ink-3);
+}
+
+.learn__foot {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+
+/* ── A slot ───────────────────────────────────────────────────────────────── */
+
+/*
+ * A slot is the phone plus the two things the demo says *about* the phone: why
+ * this conversation is on screen, and the offer to drive it yourself.
+ *
+ * Both of those live outside the bezel, on purpose and for the same reason the
+ * palette note gives: everything inside a phone belongs to WhatsApp and must look
+ * like it, so a demo control painted into the chat would be a small lie about what
+ * a driver will see in the field.
+ */
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 366px;
+  max-width: 100%;
+}
+
+.slot__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.3rem;
+}
+
+.slot__bar[hidden] {
+  display: none;
+}
+
+/* The retention state, as a pill in the same language as a driver's status pill —
+   a held slot is tinted, a finished conversation is not. This is the only visible
+   evidence of R5, and it is what makes "that slot is being kept for her" a thing
+   an audience can see rather than something they have to be told. */
+.slot__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.55rem 0.16rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.slot__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.slot__dot[data-kind="waiting"],
+.slot__dot[data-kind="break"] {
+  color: var(--ochre);
+}
+
+.slot__dot[data-kind="riding"],
+.slot__dot[data-kind="human"] {
+  color: var(--clay);
+}
+
+.slot__dot[data-kind="talking"] {
+  color: var(--jade);
+}
+
+.slot[data-retained="true"] .slot__state {
+  color: var(--ink-2);
+  border-color: var(--line);
+  background: var(--paper-2);
+}
+
+.slot[data-pinned="true"] .slot__state {
+  border-color: var(--clay);
+  background: var(--clay-soft);
+  color: var(--clay);
+  font-weight: 700;
+}
+
+.slot__take {
+  flex: none;
+  padding: 0.24rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink-2);
+  font-size: 0.76rem;
+}
+
+.slot__take:hover {
+  border-color: var(--clay);
+  color: var(--clay);
+}
+
+.slot__take[aria-pressed="true"] {
+  border-color: var(--clay);
+  background: var(--clay);
+  color: var(--clay-ink);
+  font-weight: 700;
+}
+
+/* A pinned phone wears the clay ring, so "somebody is driving this one" survives
+   being glanced at from the back of a room. */
+.slot[data-pinned="true"] .phone {
+  box-shadow:
+    inset 0 0 0 1px var(--device-edge),
+    0 0 0 2px var(--clay),
+    var(--shadow);
+}
+
+/* ── An empty slot ────────────────────────────────────────────────────────── */
+
+/*
+ * Four of these are the page before anybody presses ▶, which makes this the
+ * demo's resting appearance rather than a fallback. Phone-shaped and phone-sized
+ * so that nothing on the page moves when somebody finally writes in.
+ */
+.slot__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: calc(var(--phone-h) + 22px);
+  padding: 1.5rem;
+  border: 1.5px dashed var(--line);
+  border-radius: 40px;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.slot__empty-mark {
+  font-size: 1.6rem;
+  opacity: 0.5;
+}
+
+.slot__empty-head {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.slot__empty-note {
+  margin: 0;
+  max-width: 17rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+/* Not italic and not grey, because it is the one sentence here that asks for
+   something rather than explaining. */
+.slot__empty-hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+/*
+ * …and it goes away once the hour is running.
+ *
+ * An empty slot mid-morning is the ordinary case — six customers pass through two
+ * screens — and telling somebody to press a button they pressed twenty minutes ago
+ * reads as the page having lost track of itself. `main.ts` sets the attribute when
+ * the hour is built, so the rule is one place and the slots stay ignorant of it.
+ */
+:root[data-hour] .slot__empty-hint {
+  display: none;
+}
+
+/* ── The phone ────────────────────────────────────────────────────────────── */
+
+.phone {
+  width: 366px;
+  max-width: 100%;
+  padding: 11px;
+  border-radius: 40px;
+  background: var(--device);
+  box-shadow:
+    inset 0 0 0 1px var(--device-edge),
+    var(--shadow);
+}
+
+.phone__shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: var(--phone-h);
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--wa-ground);
+  font-family: var(--wa-font);
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: var(--wa-ink);
+}
+
+/* The status bar the real phone would have — a sliver, not a costume. */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: none;
+  padding: 0.6rem 0.8rem;
+  background: var(--wa-bar);
+  color: var(--wa-bar-ink);
+  border-bottom: 1px solid var(--wa-rule);
+}
+
+.bar__avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--wa-avatar);
+  color: var(--wa-avatar-ink);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.bar__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.bar__nameline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.bar__tuktuk {
+  flex: none;
+  font-family: var(--figures);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--wa-bar-ink-2);
+}
+
+.bar__tuktuk[hidden] {
+  display: none;
+}
+
+.bar__name {
+  font-size: 0.97rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar__meta {
+  font-size: 0.73rem;
+  color: var(--wa-bar-ink-2);
+  font-family: var(--figures);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar__status {
+  flex: none;
+  padding: 0.16rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--wa-avatar);
+  color: var(--wa-avatar-ink);
+  white-space: nowrap;
+}
+
+.bar__status[data-status="available"] {
+  background: var(--jade-soft);
+  color: var(--jade);
+}
+
+.bar__status[data-status="assigned"],
+.bar__status[data-status="on_trip"] {
+  background: var(--clay-soft);
+  color: var(--clay);
+}
+
+.bar__status[data-status="break"] {
+  background: var(--ochre-soft);
+  color: var(--ochre);
+}
+
+/* ── The thread ───────────────────────────────────────────────────────────── */
+
+.thread {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.7rem 0.6rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background-color: var(--wa-ground);
+  background-image: radial-gradient(circle at 2px 2px, rgba(120, 96, 64, 0.06) 1px, transparent 0);
+  background-size: 14px 14px;
+}
+
+.msg {
+  display: flex;
+  max-width: 82%;
+}
+
+.msg--in {
+  align-self: flex-start;
+}
+
+.msg--out {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+/* Extra air above the first bubble of a run, the way a new turn reads. */
+.msg--head {
+  margin-top: 8px;
+}
+
+.msg:first-child {
+  margin-top: 0;
+}
+
+.msg__bubble {
+  position: relative;
+  min-width: 5.5rem;
+  max-width: 100%;
+  border-radius: 7.5px;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+}
+
+/*
+ * A bubble announcing itself, once, as it arrives.
+ *
+ * Four conversations are on screen and three of them are somebody else's, so
+ * "which rectangle just spoke?" is a real question for anybody watching from the
+ * back of a room. The animation is declared on the element rather than driven by
+ * a class and a timer: it plays because the node was inserted, and there is
+ * nothing to tidy up afterwards and no wall clock read (R4). `phone.ts` withholds
+ * the attribute while it is replaying a conversation into a slot that has just
+ * adopted it, because none of that is new.
+ *
+ * Movement only — no fade, and the reason is the screenshots. A sim minute at 12×
+ * is five seconds of anybody's, but a verification harness steps a whole morning
+ * through in about as long, so every bubble in every thread is mid-animation when
+ * the picture is taken. An opacity ramp made those pictures — the artefacts a
+ * reader is told to look at — show a page half drawn. A bubble caught three
+ * pixels low is a bubble.
+ *
+ * Deliberately not a colour flash either: the palette's clay means a refusal and
+ * its ochre means waiting, so tinting every arrival would put a greeting in the
+ * vocabulary of a rejection. A lift and a settle says "now" and nothing else.
+ */
+@keyframes msg-arrive {
+  from {
+    transform: translateY(7px);
+  }
+}
+
+.msg[data-fresh] .msg__bubble {
+  animation: msg-arrive 260ms ease-out;
+}
+
+.msg--in .msg__bubble {
+  background: var(--wa-in);
+}
+
+.msg--out .msg__bubble {
+  background: var(--wa-out);
+}
+
+/* WhatsApp's tail: a triangle on the outer top corner of a run's first bubble. */
+.msg--head .msg__bubble::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 13px;
+}
+
+.msg--in.msg--head .msg__bubble {
+  border-top-left-radius: 0;
+}
+
+.msg--in.msg--head .msg__bubble::before {
+  left: -8px;
+  background: var(--wa-in);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.msg--out.msg--head .msg__bubble {
+  border-top-right-radius: 0;
+}
+
+.msg--out.msg--head .msg__bubble::before {
+  right: -8px;
+  background: var(--wa-out);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.msg__text {
+  position: relative;
+  padding: 6px 9px 7px;
+}
+
+.msg__body {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.msg__body strong {
+  font-weight: 600;
+}
+
+/* Reserves room on the last line so text never runs under the timestamp. */
+.msg__pad {
+  display: inline-block;
+  width: 3.1rem;
+  height: 1px;
+}
+
+.msg__time {
+  position: absolute;
+  right: 9px;
+  bottom: 5px;
+  font-family: var(--figures);
+  font-size: 0.66rem;
+  color: var(--wa-time);
+  white-space: nowrap;
+}
+
+/* ── Reply buttons and the list opener ────────────────────────────────────── */
+
+.msg__actions {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--wa-rule);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.52rem 0.6rem;
+  border: none;
+  border-top: 1px solid var(--wa-rule);
+  background: transparent;
+  color: var(--wa-action);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.action:first-child {
+  border-top: none;
+}
+
+.action:last-child {
+  border-radius: 0 0 7.5px 7.5px;
+}
+
+.action:hover {
+  background: var(--wa-sheet-2);
+}
+
+/* ── The control that was just pressed ────────────────────────────────────── */
+
+/*
+ * What a tap looks like, a beat before its reply arrives.
+ *
+ * `press.ts` sets `data-pressed` on the affordance a *delivered* inbound event came
+ * out of — a reply button, a row in a list sheet, the pin button, the send button —
+ * and removes it again on a real-time timer. This is everything that decides what
+ * that looks like, which is why it is a wash of WhatsApp's own action blue and not an
+ * invented colour: the palette outside the bezel means things (clay is a refusal,
+ * ochre is waiting) and a tap means neither of them.
+ *
+ * The animation is a *settle into* the wash rather than a pulse: the control starts
+ * fully filled and relaxes to the tint it then holds. So the state a screenshot
+ * catches is the tint, whenever in the 450 ms the shutter falls, and the reduced-motion
+ * rule at the foot of this file has only to switch the animation off — the highlight
+ * itself survives, static, because it is not the animation.
+ *
+ * Specificity: `.phone[data-live="false"]` dims a dead phone's buttons and recolours
+ * its send button, so these selectors have to carry `.phone[data-live]` to outrank it.
+ * A pressed control on a phone nobody is driving is the common case, not the odd one
+ * — three of the four phones are always somebody else's.
+ */
+@keyframes press-land {
+  from {
+    background: var(--wa-action);
+    color: #fff;
+  }
+}
+
+.phone[data-live] .action[data-pressed],
+.phone[data-live] .sheet__row[data-pressed],
+.phone[data-live] .composer__send[data-pressed],
+.phone[data-live] .composer__attach[data-pressed] {
+  background: var(--wa-press);
+  color: var(--wa-press-ink);
+  box-shadow: inset 0 0 0 2px var(--wa-action);
+  animation: press-land 200ms ease-out;
+}
+
+/*
+ * A sheet that is a picture rather than a menu.
+ *
+ * `phone.ts` puts the sheet back up for the 450 ms of a row press, so that what a
+ * viewer sees of a list choice is the list with the choice on it. It covers the whole
+ * phone while it is there, so it must not be able to catch anything: without this, a
+ * tap meant for the thread underneath would land on the scrim for the rest of the
+ * press, and on a driver's phone that is the ✅ Listo he is being asked for.
+ */
+.sheet[data-mode="show"] {
+  pointer-events: none;
+}
+
+/* WhatsApp fills the radio on the row you picked, and the pick is the whole point of
+   showing the sheet at all. */
+.phone[data-live] .sheet__row[data-pressed] .sheet__row-mark {
+  border-color: var(--wa-action);
+  background:
+    radial-gradient(circle, var(--wa-action) 0 46%, transparent 48% 100%);
+}
+
+/* ── A shared pin ─────────────────────────────────────────────────────────── */
+
+.msg--media .msg__bubble {
+  padding: 3px;
+  min-width: 0;
+}
+
+.msg--media .msg__time {
+  right: 10px;
+  bottom: 9px;
+  padding: 0.05rem 0.34rem;
+  border-radius: 999px;
+  background: rgba(11, 20, 26, 0.45);
+  color: #fff;
+}
+
+.pin {
+  margin: 0;
+  width: 232px;
+  max-width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--map-ground);
+}
+
+.pin__art {
+  display: block;
+  line-height: 0;
+}
+
+.pin__art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pin__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Right room for the timestamp, which floats over this strip. */
+  padding: 5px 3.4rem 7px 8px;
+  background: var(--wa-in);
+}
+
+.msg--out .pin__foot {
+  background: var(--wa-out);
+}
+
+.pin__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.pin__coords {
+  font-family: var(--figures);
+  font-size: 0.68rem;
+  color: var(--wa-time);
+}
+
+/* ── The composer ─────────────────────────────────────────────────────────── */
+
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: none;
+  padding: 0.45rem 0.5rem;
+  background: var(--wa-bar);
+  border-top: 1px solid var(--wa-rule);
+}
+
+.composer__attach,
+.composer__send {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wa-bar-ink-2);
+}
+
+.composer__attach {
+  font-size: 1.4rem;
+  line-height: 1;
+  padding-bottom: 3px;
+}
+
+.composer__attach:hover,
+.composer__send:hover {
+  background: var(--wa-rule);
+  color: var(--wa-bar-ink);
+}
+
+.composer__send {
+  background: var(--jade);
+  color: #fff;
+}
+
+.composer__send:hover {
+  background: var(--jade);
+  color: #fff;
+  filter: brightness(1.1);
+}
+
+.composer__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--wa-in);
+  color: var(--wa-ink);
+  font-family: inherit;
+  font-size: 0.92rem;
+}
+
+.composer__input::placeholder {
+  color: var(--wa-bar-ink-2);
+}
+
+.composer__input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--wa-action);
+}
+
+/* ── A phone nobody is driving ────────────────────────────────────────────── */
+
+/*
+ * The default state of every phone on this page: a mirror of a conversation
+ * somebody else is having. The affordances are drawn but inert, and they look it —
+ * an interface that accepts a tap and does nothing reads as broken, and a viewer
+ * who concludes the demo is broken stops watching it. Taking control is what turns
+ * these back on, and `phone.ts` refuses the event as well as blocking the click,
+ * so a stale closure cannot slip past the styling.
+ */
+.phone[data-live="false"] .action,
+.phone[data-live="false"] .composer__attach,
+.phone[data-live="false"] .composer__send {
+  pointer-events: none;
+}
+
+.phone[data-live="false"] .action {
+  color: var(--wa-bar-ink-2);
+}
+
+.phone[data-live="false"] .composer {
+  opacity: 0.7;
+}
+
+.phone[data-live="false"] .composer__send {
+  background: var(--wa-avatar);
+  color: var(--wa-avatar-ink);
+}
+
+.phone[data-live="false"] .composer__input {
+  cursor: default;
+}
+
+/* ── The list sheet ───────────────────────────────────────────────────────── */
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.sheet[hidden] {
+  display: none;
+}
+
+.sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 20, 26, 0.45);
+}
+
+.sheet__panel {
+  position: relative;
+  max-height: 78%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px 14px 0 0;
+  background: var(--wa-sheet);
+  box-shadow: 0 -8px 24px rgba(11, 20, 26, 0.3);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--wa-rule);
+}
+
+.sheet__title {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.sheet__close {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wa-bar-ink-2);
+  font-size: 0.85rem;
+}
+
+.sheet__close:hover {
+  background: var(--wa-rule);
+  color: var(--wa-ink);
+}
+
+.sheet__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 0.4rem;
+}
+
+.sheet__section {
+  padding: 0.5rem 0.9rem 0.25rem;
+  background: var(--wa-sheet-2);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wa-bar-ink-2);
+}
+
+.sheet__row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: none;
+  border-top: 1px solid var(--wa-rule);
+  background: transparent;
+  color: var(--wa-ink);
+  font-family: inherit;
+  text-align: left;
+}
+
+.sheet__row:hover {
+  background: var(--wa-sheet-2);
+}
+
+.sheet__row-label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.sheet__row-title {
+  font-size: 0.92rem;
+}
+
+.sheet__row-desc {
+  font-family: var(--figures);
+  font-size: 0.7rem;
+  color: var(--wa-bar-ink-2);
+}
+
+/* WhatsApp's list rows carry a radio on the right; unchecked is the only state
+   the demo ever shows, since picking one closes the sheet. */
+.sheet__row-mark {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  border: 1.5px solid var(--wa-bar-ink-2);
+  border-radius: 50%;
+}
+
+.sheet__row:hover .sheet__row-mark {
+  border-color: var(--wa-action);
+}
+
+/* ── The ticker ───────────────────────────────────────────────────────────── */
+
+/*
+ * Under the map, filling whatever the middle column has left.
+ *
+ * It answers "why did that just happen?" at the moment it happens, so it has to
+ * be on screen the whole time — which used to mean a sticky strip across the foot
+ * of the page. That cost every phone the strip's full height. Here it costs
+ * nothing: the middle column is exactly as tall as the phone columns beside it and
+ * the map only uses the top of it, so growing into the rest spends space that was
+ * empty. It also puts the sentence explaining a taxi directly under the taxi.
+ *
+ * The responsive rule at the end of this file puts it back across the foot of the
+ * page for the windows where the composition does not fit and the page scrolls.
+ */
+.ticker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  /*
+   * The basis is `--ticker-h` and not 0, and that is the whole of this rule.
+   * The middle column is a grid item, so the grid row is sized from what that
+   * column asks for — and a flexible item with an indefinite basis asks for its
+   * whole content. With a hundred lines in the log that made the middle column
+   * the tallest thing on the page and the phones lost again exactly what this
+   * move was for. A definite basis asks for `--ticker-h`; the growth on top of it
+   * is spending space the phones had already claimed.
+   */
+  flex: 1 1 var(--ticker-h);
+  width: 100%;
+  min-height: var(--ticker-h);
+  padding: 0.5rem 0.9rem 0.6rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+}
+
+.ticker__head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex: none;
+}
+
+.ticker__label {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.ticker__note {
+  margin-left: auto;
+  color: var(--ink-3);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+.ticker__list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tick {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.1rem 0 0.1rem 0.55rem;
+  border-left: 3px solid var(--line-soft);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.tick__time {
+  flex: none;
+  font-family: var(--figures);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.76rem;
+  color: var(--ink-3);
+}
+
+.tick__text strong {
+  font-weight: 700;
+}
+
+.tick--empty {
+  border-left-color: transparent;
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+/* The colour says what kind of thing happened: ochre for waiting, jade for
+   something completed, clay for a refusal or a cancellation — the palette's own
+   meanings, so the map and the log agree without a legend. */
+.tick[data-kind="hail"],
+.tick[data-kind="queued"],
+.tick[data-kind="break"] {
+  border-left-color: var(--ochre);
+}
+
+.tick[data-kind="assign"],
+.tick[data-kind="done"],
+.tick[data-kind="bandera"] {
+  border-left-color: var(--jade);
+}
+
+.tick[data-kind="cancel"],
+.tick[data-kind="refuse"] {
+  border-left-color: var(--clay);
+}
+
+.tick[data-kind="control"],
+.tick[data-kind="beat"] {
+  border-left-color: var(--clay);
+  background: var(--clay-soft);
+}
+
+/* ── Narrow screens ───────────────────────────────────────────────────────── */
+
+/*
+ * Too narrow for three columns: the map goes above the phones rather than being
+ * squeezed. The threshold is where the middle column drops below about 650 px,
+ * which is where the landmark names stop being readable — measured on the
+ * screenshots, not guessed.
+ */
+@media (max-width: 1460px) {
+  .stage {
+    grid-template-columns: auto auto;
+  }
+
+  .column--map {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .map {
+    max-width: 900px;
+  }
+
+  /*
+   * Full-size phones here, not the fitted height. With the map above them the page
+   * scrolls regardless, so shrinking the threads would cost readability and buy
+   * nothing — and the two columns of two are already the 2×2 grid §3 asks for.
+   */
+  :root {
+    --phone-h: 520px;
+  }
+}
+
+/*
+ * The windows where the composition does not fit, and the log goes back to being
+ * a strip across the foot of the page.
+ *
+ * Two of them. Under 1460px the map is stacked above the phones and the page is
+ * taller than any screen by construction. Under about 880px of viewport height
+ * `--phone-h` is pinned to its 320px floor and the stage overflows whatever the
+ * width. In both cases the log would otherwise scroll away halfway up the page,
+ * and a log nobody can see is worse than no log: it is the only thing on the page
+ * that says *why* a taxi turned round.
+ *
+ * Fixed rather than sticky. Sticky would keep it only while the middle column is
+ * still in the scrollport, and under the breakpoint that column is the first thing
+ * to scroll off the top.
+ */
+@media (max-width: 1460px), (max-height: 880px) {
+  .stage {
+    padding-bottom: calc(var(--ticker-h) + 1rem);
+  }
+
+  .ticker {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    width: auto;
+    height: var(--ticker-h);
+    flex: none;
+    padding: 0.5rem 1.5rem 0.6rem;
+    border: none;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: 0 -6px 18px rgba(36, 28, 20, 0.07);
+  }
+}
+
+@media (max-width: 860px) {
+  .stage {
+    grid-template-columns: auto;
+    gap: 2rem;
+    padding: 1.5rem 1rem calc(var(--ticker-h) + 1.5rem);
+  }
+
+  .top {
+    padding: 0.7rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .top__sub {
+    display: none;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+
+/*
+ * What "reduced motion" means on a page whose whole subject is movement.
+ *
+ * The taxis keep moving, and that is the decision, not an oversight. Their speed
+ * is `pathLength / travelMinutes` (R3) — the same number the customer on the
+ * right-hand phone was quoted — so the motion *is* the data. Freezing it would
+ * not calm the page down; it would delete the thing the page exists to show, and
+ * leave a viewer who asked for less motion looking at a diagram instead of a
+ * demonstration. The clock control is the honest answer for anybody who wants the
+ * town to stop, and it is one click away at all times.
+ *
+ * What does go is everything decorative, which here is one thing: the bubble that
+ * lifts as it arrives. The thread still scrolls to it, so nothing is lost but the
+ * movement.
+ *
+ * Last in the file so it wins over the rule it turns off.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .msg[data-fresh] .msg__bubble {
+    animation: none;
+  }
+
+  /*
+   * The press keeps its highlight and loses its landing.
+   *
+   * Showing which control was tapped is information and not decoration — it is half
+   * of what makes the interaction legible — so what goes is the 200 ms settle into the
+   * wash, leaving the wash itself: an instant state change that holds for the same
+   * 450 ms and reads the same in a screenshot.
+   */
+  .phone[data-live] .action[data-pressed],
+  .phone[data-live] .sheet__row[data-pressed],
+  .phone[data-live] .composer__send[data-pressed],
+  .phone[data-live] .composer__attach[data-pressed] {
+    animation: none;
+  }
+}

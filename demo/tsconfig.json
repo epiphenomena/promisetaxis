@@ -1,0 +1,17 @@
+{
+  // Same strictness as the app — the demo runs the app's own domain code, so a
+  // laxer setting here would only hide a real bug. Separate from the root
+  // `include` on purpose: the Worker must keep typechecking without DOM.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // Deliberately *not* `@cloudflare/workers-types`: its global HTMLRewriter
+    // `Element` shadows the DOM's own, and nothing in demo/ runs on Workers. The
+    // four D1 types the shim implements come in through `d1-global.d.ts` instead,
+    // which explains the collision in full. `node` is for the phase-1
+    // verification harness, the one file with a node host.
+    "types": ["node"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["dist"]
+}

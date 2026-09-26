@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una hora en Copán Ruinas</title>
+<!--
+  The dev shell. `npm run demo:dev` serves this directory and esbuild puts its
+  output in ./dist, so both paths below resolve in place. `demo/build.mjs` reads
+  this same file and swaps those two references for the bytes they point at, which
+  is how one self-contained `dist/index.html` comes out the other end — so the two
+  markers below are load-bearing and the build fails loudly if it cannot find them.
+
+  Everything inside the three columns and the log is built by `main.ts`. What is
+  written out here is only the furniture that never changes: the controls, the
+  column headings from §3, and the empty containers the slots, the map and the log
+  fill.
+-->
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./dist/main.css">
+</head>
+<body>
+
+<header class="top">
+  <h1 class="top__title">Una hora en <em>Copán Ruinas</em></h1>
+  <span class="top__sub">despacho de tuktuks por WhatsApp</span>
+  <span class="top__spacer"></span>
+  <div class="clock">
+    <span class="clock__label">Hora</span>
+    <span class="clock__face" id="clock">09:00</span>
+  </div>
+  <div class="controls">
+    <!--
+      Two controls, not one, and the distinction matters. #hour runs the scripted
+      hour from nine in the morning and is the thing somebody came here to press;
+      #play is the clock, so a viewer can stop on a message and read it. Pressing
+      #hour again starts the same hour over from the top — identically, which is
+      what R4 is for.
+
+      #play says "Correr el reloj" and not "Empezar", so that the two controls do
+      not both offer to start something. `main.ts` writes the same word at boot;
+      it is repeated here so there is no frame in which the page says otherwise.
+    -->
+    <button class="btn btn--hour" id="hour" type="button">🎬 Empezar la hora</button>
+    <button class="btn btn--play" id="play" type="button" aria-pressed="false">Correr el reloj</button>
+    <div class="speeds" id="speeds" role="group" aria-label="Velocidad"></div>
+    <button class="btn" id="theme" type="button">Oscuro</button>
+  </div>
+  <span class="seed" id="seed"></span>
+</header>
+
+<div class="fault" id="fault" hidden>
+  <strong id="fault-head"></strong>
+  <span class="fault__detail" id="fault-detail"></span>
+</div>
+
+<main class="stage">
+  <section class="column column--phones" id="col-drivers">
+    <h2 class="column__label">Conductores</h2>
+  </section>
+  <section class="column column--map" id="col-map">
+    <h2 class="column__label">Copán Ruinas</h2>
+    <!--
+      The map, the zone-time strip and the log, in that order, all in the middle
+      column. The log used to be a strip across the foot of the page, which cost
+      every phone about eighty pixels of thread — enough that two consecutive bot
+      messages could not both be on screen, and the demo's one beat about the
+      system refusing something played out of frame. The middle column had that
+      height spare: the map is as wide as the window lets it be and then stops,
+      so below it there was nothing. Now the log lives in the space the map does
+      not use, and the phones get the height back.
+    -->
+    <div class="mapstack" id="map-stack"></div>
+    <section class="ticker">
+      <div class="ticker__head">
+        <h2 class="ticker__label">Bitácora de la hora</h2>
+        <span class="ticker__note">Sin red ni servidor: todo ocurre dentro de esta página.</span>
+      </div>
+      <ol class="ticker__list" id="ticker-list" aria-live="polite" aria-label="Bitácora de la hora"></ol>
+    </section>
+  </section>
+  <section class="column column--phones" id="col-customers">
+    <h2 class="column__label">Clientes</h2>
+  </section>
+</main>
+
+<script type="module" src="./dist/main.js"></script>
+</body>
+</html>

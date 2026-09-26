@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuktuk — banco de pruebas</title>
+<style>
+  :root {
+    --bg: #10130f;
+    --panel: #1a1e18;
+    --panel-2: #222720;
+    --line: #333a30;
+    --ink: #e8ebe4;
+    --ink-dim: #97a08d;
+    --accent: #4caf7e;
+    --accent-dim: #1e3329;
+    --red: #d96a54;
+    --amber: #d9a441;
+    --chat-bg: #0d100c;
+    --in: #262b23;
+    --out: #16402c;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 14px; height: 100vh;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  header {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    padding: 0.6rem 1rem; background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  header h1 {
+    font-size: 0.95rem; margin: 0; font-weight: 700; letter-spacing: 0.02em;
+  }
+  header h1 span { color: var(--accent); }
+  .spacer { flex: 1; }
+  button, select, input {
+    font-family: inherit; font-size: 0.85rem; color: var(--ink);
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 6px; padding: 0.35rem 0.6rem;
+  }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+  button.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  button.danger:hover { border-color: var(--red); color: var(--red); }
+
+  main { flex: 1; display: grid; grid-template-columns: 1fr 1fr 320px; min-height: 0; }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr 1fr; } aside { display: none; } }
+
+  .pane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); }
+  .pane-head {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.75rem; background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  .pane-head .role {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.15rem 0.45rem; border-radius: 999px;
+  }
+  .role.cust { background: var(--accent-dim); color: var(--accent); }
+  .role.drv  { background: #3a2f18; color: var(--amber); }
+  .pane-head select { flex: 1; min-width: 0; }
+
+  .chat {
+    flex: 1; overflow-y: auto; padding: 0.75rem;
+    background: var(--chat-bg); display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .msg { max-width: 85%; padding: 0.45rem 0.7rem; border-radius: 10px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+  .msg.bot  { align-self: flex-start; background: var(--in);  border-bottom-left-radius: 3px; }
+  .msg.me   { align-self: flex-end;   background: var(--out); border-bottom-right-radius: 3px; }
+  .msg .meta { display: block; font-size: 0.65rem; color: var(--ink-dim); margin-top: 0.2rem; }
+
+  .wa-buttons { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+  .wa-buttons button {
+    background: transparent; border: 1px solid var(--accent); color: var(--accent);
+    border-radius: 999px; padding: 0.2rem 0.7rem; font-weight: 600;
+  }
+  .wa-list { margin-top: 0.5rem; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .wa-list .sec {
+    padding: 0.3rem 0.6rem; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); background: var(--panel);
+  }
+  .wa-list button {
+    display: block; width: 100%; text-align: left; border: none; border-top: 1px solid var(--line);
+    background: var(--panel-2); border-radius: 0; padding: 0.45rem 0.6rem;
+  }
+  .wa-list button:hover { background: var(--accent-dim); }
+  .wa-loc {
+    margin-top: 0.5rem; padding: 0.5rem; border: 1px dashed var(--accent);
+    border-radius: 8px; font-size: 0.8rem; color: var(--accent);
+  }
+  .wa-pin { margin-top: 0.4rem; font-family: var(--mono); font-size: 0.75rem; color: var(--ink-dim); }
+
+  .composer { display: flex; gap: 0.4rem; padding: 0.5rem; background: var(--panel); border-top: 1px solid var(--line); }
+  .composer input { flex: 1; }
+
+  aside { display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
+  aside h2 {
+    margin: 0; padding: 0.5rem 0.75rem; font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim);
+    border-bottom: 1px solid var(--line);
+  }
+  .state { overflow-y: auto; flex: 1; }
+  .row { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--line); font-size: 0.8rem; display: flex; gap: 0.5rem; align-items: baseline; }
+  .row .name { font-weight: 600; }
+  .row .dim { color: var(--ink-dim); font-size: 0.75rem; }
+  .pill {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.1rem 0.4rem; border-radius: 999px; white-space: nowrap;
+  }
+  .pill.available { background: var(--accent-dim); color: var(--accent); }
+  .pill.on_trip, .pill.assigned { background: #2b3348; color: #8fa8e0; }
+  .pill.break { background: #3a2f18; color: var(--amber); }
+  .pill.off { background: #2a2a2a; color: var(--ink-dim); }
+  .pill.pending { background: #3d2620; color: var(--red); }
+  .pill.done { background: #1e3329; color: var(--accent); }
+  .pill.canceled { background: #2a2a2a; color: var(--ink-dim); }
+
+  dialog {
+    background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 10px; padding: 0; max-width: 30rem; width: 92vw;
+  }
+  dialog::backdrop { background: rgba(0,0,0,0.6); }
+  .dlg-head { padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); font-weight: 600; }
+  .dlg-body { padding: 0.75rem 1rem; max-height: 60vh; overflow-y: auto; }
+  .place-btn {
+    display: block; width: 100%; text-align: left; margin-bottom: 0.3rem;
+    background: var(--panel-2);
+  }
+  .place-btn .z { color: var(--ink-dim); font-size: 0.72rem; }
+  .dlg-foot { padding: 0.6rem 1rem; border-top: 1px solid var(--line); display: flex; gap: 0.5rem; }
+  .empty { padding: 1.5rem 0.75rem; text-align: center; color: var(--ink-dim); font-size: 0.8rem; }
+  .banner {
+    padding: 0.5rem 1rem; background: #3d2620; color: var(--red);
+    font-size: 0.82rem; border-bottom: 1px solid var(--line); display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner" id="banner"></div>
+
+<header>
+  <h1>🛺 Tuktuk <span>banco de pruebas</span></h1>
+  <span class="dim" style="color:var(--ink-dim);font-size:0.78rem">fake WhatsApp — no messages leave this machine</span>
+  <div class="spacer"></div>
+  <a href="/" style="color:var(--accent);font-size:0.82rem;font-weight:600">Office board →</a>
+  <button id="btn-sweep" title="Run the one-minute cron sweep now">Run sweep</button>
+  <button id="btn-reset" class="danger" title="Clear trips, sessions and chat history">Reset</button>
+</header>
+
+<main>
+  <!-- Customer pane -->
+  <section class="pane">
+    <div class="pane-head">
+      <span class="role cust">Cliente</span>
+      <select id="cust-phone">
+        <option value="50488880001">50488880001 — María</option>
+        <option value="50488880002">50488880002 — Carlos</option>
+        <option value="50488880003">50488880003 — turista</option>
+      </select>
+    </div>
+    <div class="chat" id="cust-chat"></div>
+    <form class="composer" id="cust-form">
+      <input id="cust-input" placeholder="Escriba un mensaje…" autocomplete="off">
+      <button class="primary">Enviar</button>
+    </form>
+  </section>
+
+  <!-- Driver pane -->
+  <section class="pane">
+    <div class="pane-head">
+      <span class="role drv">Conductor</span>
+      <select id="drv-phone"></select>
+    </div>
+    <div class="chat" id="drv-chat"></div>
+    <form class="composer" id="drv-form">
+      <input id="drv-input" placeholder="listo · bandera · descanso…" autocomplete="off">
+      <button class="primary">Enviar</button>
+    </form>
+  </section>
+
+  <!-- Live state -->
+  <aside>
+    <h2>Conductores</h2>
+    <div class="state" id="state-drivers"></div>
+    <h2>Viajes</h2>
+    <div class="state" id="state-trips"></div>
+  </aside>
+</main>
+
+<dialog id="place-dialog">
+  <div class="dlg-head">📍 ¿Desde dónde envía la ubicación?</div>
+  <div class="dlg-body" id="place-list"></div>
+  <div class="dlg-foot">
+    <input id="place-lat" placeholder="lat" style="width:7rem">
+    <input id="place-lng" placeholder="lng" style="width:7rem">
+    <button id="place-custom">Usar coordenadas</button>
+    <div class="spacer"></div>
+    <button id="place-cancel">Cancelar</button>
+  </div>
+</dialog>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+
+const panes = {
+  customer: { chat: $("cust-chat"), select: $("cust-phone"), since: 0, seen: new Set() },
+  driver:   { chat: $("drv-chat"),  select: $("drv-phone"),  since: 0, seen: new Set() },
+};
+
+function banner(msg) {
+  const el = $("banner");
+  el.textContent = msg;
+  el.style.display = msg ? "block" : "none";
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) {
+    banner(`${path} → ${res.status} ${await res.text()}`);
+    throw new Error(`${path} ${res.status}`);
+  }
+  banner("");
+  return res.json();
+}
+
+/* ---------- sending ---------- */
+
+async function send(role, payload) {
+  const phone = panes[role].select.value;
+  echo(role, payload);
+  await api("/dev/inbound", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ from: phone, payload }),
+  });
+  poll(role);
+}
+
+/** Show what the person just "sent" on their own side of the thread. */
+function echo(role, payload) {
+  let text;
+  if (payload.kind === "text") text = payload.text;
+  else if (payload.kind === "location") text = `📍 ${payload.lat.toFixed(5)}, ${payload.lng.toFixed(5)}`;
+  else if (payload.kind === "button") text = `▸ ${payload.title}`;
+  else if (payload.kind === "list") text = `▸ ${payload.title}`;
+  else text = `(${payload.kind})`;
+
+  const el = document.createElement("div");
+  el.className = "msg me";
+  el.textContent = text;
+  panes[role].chat.append(el);
+  scroll(role);
+}
+
+/* ---------- receiving ---------- */
+
+async function poll(role) {
+  const pane = panes[role];
+  const phone = pane.select.value;
+  if (!phone) return;
+
+  const { messages } = await api(`/dev/outbox?phone=${encodeURIComponent(phone)}&since=${pane.since}`);
+  for (const m of messages) {
+    if (pane.seen.has(m.id)) continue;
+    pane.seen.add(m.id);
+    pane.since = Math.max(pane.since, m.id);
+    render(role, m.spec);
+  }
+}
+
+function render(role, spec) {
+  const wrap = document.createElement("div");
+  wrap.className = "msg bot";
+
+  if (spec.kind === "text") {
+    wrap.append(fmt(spec.body));
+  } else if (spec.kind === "locationRequest") {
+    wrap.append(fmt(spec.body));
+    const box = document.createElement("div");
+    box.className = "wa-loc";
+    const btn = document.createElement("button");
+    btn.textContent = "📍 Enviar ubicación";
+    btn.onclick = () => pickPlace(role);
+    box.append(btn);
+    wrap.append(box);
+  } else if (spec.kind === "location") {
+    wrap.append(fmt(`📍 ${spec.name || "Ubicación"}`));
+    const pin = document.createElement("div");
+    pin.className = "wa-pin";
+    pin.textContent = `${spec.lat.toFixed(5)}, ${spec.lng.toFixed(5)}`;
+    wrap.append(pin);
+  } else if (spec.kind === "buttons") {
+    wrap.append(fmt(spec.body));
+    const row = document.createElement("div");
+    row.className = "wa-buttons";
+    for (const b of spec.buttons) {
+      const btn = document.createElement("button");
+      btn.textContent = b.title;
+      btn.onclick = () => send(role, { kind: "button", id: b.id, title: b.title });
+      row.append(btn);
+    }
+    wrap.append(row);
+  } else if (spec.kind === "list") {
+    wrap.append(fmt(spec.body));
+    const list = document.createElement("div");
+    list.className = "wa-list";
+    for (const section of spec.sections) {
+      if (section.title) {
+        const s = document.createElement("div");
+        s.className = "sec";
+        s.textContent = section.title;
+        list.append(s);
+      }
+      for (const r of section.rows) {
+        const btn = document.createElement("button");
+        btn.textContent = r.title;
+        btn.onclick = () => send(role, { kind: "list", id: r.id, title: r.title });
+        list.append(btn);
+      }
+    }
+    wrap.append(list);
+  }
+
+  panes[role].chat.append(wrap);
+  scroll(role);
+}
+
+/** WhatsApp renders *bold* — mirror it so copy reads the way it will in the field. */
+function fmt(text) {
+  const frag = document.createDocumentFragment();
+  for (const part of String(text).split(/(\*[^*]+\*)/g)) {
+    if (part.startsWith("*") && part.endsWith("*") && part.length > 2) {
+      const b = document.createElement("strong");
+      b.textContent = part.slice(1, -1);
+      frag.append(b);
+    } else if (part) {
+      frag.append(document.createTextNode(part));
+    }
+  }
+  return frag;
+}
+
+function scroll(role) {
+  const c = panes[role].chat;
+  c.scrollTop = c.scrollHeight;
+}
+
+/* ---------- location picker ---------- */
+
+let pickingFor = null;
+const dialog = $("place-dialog");
+
+async function pickPlace(role) {
+  pickingFor = role;
+  const { places } = await api("/dev/places");
+  const list = $("place-list");
+  list.replaceChildren();
+  for (const p of places) {
+    const btn = document.createElement("button");
+    btn.className = "place-btn";
+    btn.innerHTML = `${p.name} <span class="z">— ${p.zone_name}</span>`;
+    btn.onclick = () => {
+      dialog.close();
+      send(pickingFor, { kind: "location", lat: p.lat, lng: p.lng });
+    };
+    list.append(btn);
+  }
+  dialog.showModal();
+}
+
+$("place-cancel").onclick = () => dialog.close();
+$("place-custom").onclick = () => {
+  const lat = parseFloat($("place-lat").value);
+  const lng = parseFloat($("place-lng").value);
+  if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+  dialog.close();
+  send(pickingFor, { kind: "location", lat, lng });
+};
+
+/* ---------- live state ---------- */
+
+async function refreshState() {
+  const { drivers, trips } = await api("/dev/state");
+
+  const d = $("state-drivers");
+  d.replaceChildren();
+  for (const row of drivers) {
+    const el = document.createElement("div");
+    el.className = "row";
+    el.innerHTML =
+      `<span class="pill ${row.status}">${row.status}</span>` +
+      `<span class="name">${row.name}</span>` +
+      `<span class="dim">${row.zone_name ?? "—"}` +
+      (row.projected_zone_name && row.projected_zone_name !== row.zone_name
+        ? ` → ${row.projected_zone_name}` : "") +
+      `</span>`;
+    d.append(el);
+  }
+
+  const t = $("state-trips");
+  t.replaceChildren();
+  if (!trips.length) {
+    t.innerHTML = '<div class="empty">Sin viajes todavía</div>';
+  }
+  for (const row of trips) {
+    const el = document.createElement("div");
+    el.className = "row";
+    el.innerHTML =
+      `<span class="pill ${row.state}">${row.state}</span>` +
+      `<span class="name">#${row.id}</span>` +
+      `<span class="dim">${row.pickup_zone_name ?? "—"} → ${row.dest_label ?? "—"}` +
+      (row.driver_name ? ` · ${row.driver_name}` : "") +
+      (row.source === "bandera" ? " ✋" : "") +
+      `</span>`;
+    t.append(el);
+  }
+}
+
+/* ---------- wiring ---------- */
+
+$("cust-form").onsubmit = (e) => {
+  e.preventDefault();
+  const v = $("cust-input").value.trim();
+  if (!v) return;
+  $("cust-input").value = "";
+  send("customer", { kind: "text", text: v });
+};
+
+$("drv-form").onsubmit = (e) => {
+  e.preventDefault();
+  const v = $("drv-input").value.trim();
+  if (!v) return;
+  $("drv-input").value = "";
+  send("driver", { kind: "text", text: v });
+};
+
+for (const [role, pane] of Object.entries(panes)) {
+  pane.select.onchange = () => {
+    // Switching persona starts a fresh thread view, but the backend keeps
+    // that number's real session — reselecting it resumes mid-conversation.
+    pane.chat.replaceChildren();
+    pane.since = 0;
+    pane.seen.clear();
+    poll(role);
+  };
+}
+
+$("btn-reset").onclick = async () => {
+  await api("/dev/reset", { method: "POST" });
+  for (const [role, pane] of Object.entries(panes)) {
+    pane.chat.replaceChildren();
+    pane.since = 0;
+    pane.seen.clear();
+    void role;
+  }
+  refreshState();
+};
+
+$("btn-sweep").onclick = async () => {
+  await api("/dev/sweep", { method: "POST" });
+  poll("customer"); poll("driver"); refreshState();
+};
+
+async function boot() {
+  const { drivers } = await api("/dev/personas");
+  const sel = $("drv-phone");
+  sel.replaceChildren();
+  for (const d of drivers) {
+    const opt = document.createElement("option");
+    opt.value = d.phone;
+    opt.textContent = `${d.phone} — ${d.name}${d.tuktuk_no ? ` (#${d.tuktuk_no})` : ""}`;
+    sel.append(opt);
+  }
+  poll("customer");
+  poll("driver");
+  refreshState();
+  setInterval(() => { poll("customer"); poll("driver"); }, 1200);
+  setInterval(refreshState, 2000);
+}
+
+boot().catch((e) => banner(`No se pudo iniciar: ${e.message}. ¿Corrió npm run db:reset?`));
+</script>
+</body>
+</html>
